@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>EVM Simulator SUMIT SIR</title>
+<style>
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#b9bec5;color:#111;-webkit-tap-highlight-color:transparent;touch-action:manipulation;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+#app{max-width:520px;margin:0 auto;min-height:100vh;background:#e4e7eb;padding-bottom:30px}
+#hd{position:sticky;top:0;z-index:5;background:#1a1d23;color:#fff;text-align:center;padding:14px;font-weight:700;letter-spacing:3px;min-height:50px}
+#lk{position:absolute;right:8px;top:6px;height:38px;width:44px;border:0;border-radius:8px;background:#333;color:#fff;font-size:18px}
+#bn{padding:14px;font-weight:700;font-size:16px;text-align:center;color:#fff;background:#555}
+#bn.g{background:#178a38}#bn.r{background:#c62828}#bn.x{background:#555}
+.nx{display:block;margin:8px auto 0;height:44px;padding:0 24px;border:0;border-radius:8px;background:#fff;color:#111;font-weight:700;font-size:16px}
+.row{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #777;border-radius:8px;padding:8px;margin:7px 10px}
+.row>b{width:20px;text-align:center}
+.ph,.sy{width:48px;height:48px;flex:none;border-radius:8px;background:#eef0f3;display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover}.sy img{width:100%;height:100%;object-fit:contain;background:#fff}
+.nm{flex:1;font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.led{width:16px;height:16px;border-radius:50%;background:#f5c2c2;flex:none}
+.led.on{background:#f00;box-shadow:0 0 14px 4px rgba(255,0,0,.75)}
+.bl{width:72px;height:42px;border:0;border-radius:22px;background:#1e4fd8;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25);flex:none}
+.bl:active{transform:translateY(2px)}
+#main.lk .bl{opacity:.4}
+.vv{margin:12px 10px;padding:8px;background:#444;border-radius:10px;min-height:160px;text-align:center}
+.vv small{color:#ccc;letter-spacing:3px;font-size:11px}
+.slip{background:#fff;width:210px;margin:8px auto 0;padding:8px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;animation:drop .35s ease-out}
+.slip .sy{width:64px;height:64px}
+.bar{height:3px;background:#1e4fd8;align-self:flex-start;animation:shr linear forwards}
+@keyframes shr{from{width:100%}to{width:0}}
+@keyframes drop{from{transform:translateY(-30px);opacity:0}to{transform:none;opacity:1}}
+.card{background:#fff;border-radius:12px;text-align:center;padding:18px;margin:12px}
+.card small{color:#666}.big{font-size:56px;font-weight:800;line-height:1.1}
+.cb{display:block;width:calc(100% - 24px);height:54px;margin:8px 12px;border:0;border-radius:10px;color:#fff;font-size:16px;font-weight:700;letter-spacing:1px}
+.cb:disabled{opacity:.4}
+.g{background:#178a38}.b{background:#1e4fd8}.r{background:#d32f2f}.k{background:#555}
+.hint{color:#666;text-align:center;font-size:13px;margin:14px 20px}
+.ed{display:flex;gap:8px;background:#fff;border-radius:10px;margin:8px 12px;padding:10px}
+.ed>b{width:18px;padding-top:10px}.fld{flex:1;min-width:0}
+.fld input[type=text]{width:100%;height:40px;padding:0 10px;font-size:15px;border:1px solid #bbb;border-radius:8px;user-select:text;-webkit-user-select:text}
+.sl{display:flex;gap:8px;margin-top:8px}.slot{flex:1;text-align:center;font-size:12px;color:#555}
+.th{width:64px;height:64px;margin:0 auto 4px;border:2px dashed #bbb;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;background:#f6f7f9}
+.th img{width:100%;height:100%;object-fit:cover}
+.ab{display:flex;gap:4px;justify-content:center;margin-top:4px}
+.ib{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:36px;padding:0 10px;border:1px solid #bbb;border-radius:8px;background:#fff;font-size:15px}
+.x{border:0;background:none;font-size:18px;color:#c00;align-self:flex-start}
+.add{background:#fff;color:#1e4fd8;border:2px dashed #1e4fd8}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20;display:flex;align-items:center;justify-content:center}
+.mb{background:#fff;border-radius:14px;padding:16px;width:min(92%,440px);max-height:86vh;overflow:auto}
+.mb h3{margin:0 0 10px;letter-spacing:2px}
+.mb input{width:100%;height:48px;font-size:22px;text-align:center;letter-spacing:8px;border:1px solid #999;border-radius:8px;user-select:text;-webkit-user-select:text}
+.rr{display:flex;align-items:center;gap:8px;margin:7px 0}.rr .sy{width:36px;height:36px;font-size:20px}
+.rn{flex:1;font-size:14px;min-width:0}.rb{height:8px;background:#e5e7eb;border-radius:4px;margin-top:3px}
+.rb u{display:block;height:100%;background:#1e4fd8;border-radius:4px;text-decoration:none}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:20px;font-size:14px;z-index:30;max-width:90%;text-align:center}
+body{background:#6f757d}
+#app{background:linear-gradient(#cfd2d7,#aeb2b9)}
+#hd{background:linear-gradient(#f2f3f5,#c4c8ce);color:#15181d;letter-spacing:2px;border-bottom:4px solid #7d838b;padding:8px 56px}
+.plate{display:flex;align-items:center;justify-content:center;gap:10px;text-align:left}
+.plate img{width:38px;height:38px;object-fit:contain;background:#fff;border-radius:6px;border:1px solid #888}
+.plate div{line-height:1.15}.plate small{display:block;font-size:18px;letter-spacing:1.5px;color:#15181d;font-weight:800}.plate b{display:block;font-size:11px;letter-spacing:2px;color:#444;font-weight:600;margin-top:2px}
+#lk{background:#2b2f36;box-shadow:0 2px 0 #000}
+.strip{display:flex;justify-content:center;gap:28px;padding:10px;font-size:11px;font-weight:700;color:#333;letter-spacing:1px}
+.strip span{display:flex;align-items:center;gap:6px}
+.strip i{width:14px;height:14px;border-radius:50%;background:#345;border:2px solid #666}
+#gr.on{background:#22e05a;box-shadow:0 0 10px #22e05a}#rl.on{background:#ff3b30;box-shadow:0 0 10px #ff3b30}
+#bn{margin:0 10px 10px;border:3px solid #6b7078;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;padding:10px}
+#bn.g{background:#0c3b18;color:#7dff9b}#bn.r{background:#3d0d0d;color:#ff9a9a}#bn.x{background:#26282c;color:#ddd}
+.paper{margin:0 10px;background:#fff;border:3px solid #6b7078;border-radius:6px;overflow:hidden}
+.row{margin:0;border:0;border-bottom:2px solid #222;border-radius:0;padding:8px 10px;background:#fff;gap:6px}
+.row:last-child{border-bottom:0}.row>b{font-size:18px;width:26px}
+.row .ph,.row .sy{width:42px;height:42px}
+.row .nm{white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word;font-size:14px;line-height:1.15}
+.led{width:18px;height:18px;border:2px solid #555;background:#5a1a1a}.led.on{background:#ff1a1a}
+.bl{width:64px;margin:0 6px;box-shadow:0 0 0 4px #8d929a,0 0 0 6px #555,inset 0 -3px 0 rgba(0,0,0,.3)}
+.vv{background:linear-gradient(#34383e,#15171a);border:4px solid #6b7078}
+.ft{text-align:center;font-size:10px;letter-spacing:2px;color:#555;margin:14px 0 4px;font-weight:700}
+.tx{width:100%;height:42px;padding:0 10px;font-size:15px;border:1px solid #bbb;border-radius:8px;user-select:text;-webkit-user-select:text}
+</style>
+</head>
+<body>
+<div id="app"><div id="hd"></div><main id="main"></main></div>
+<div id="modal" hidden></div><div id="toast" hidden></div>
+<script>
+const $=s=>document.querySelector(s);
+const POOL=['🍎','🚀','🎈','🔑','📚','⚽','🎵','🔔','☂️','🏠','⭐','🌳','🎯','🚗','🍀'],KEY='evm_sim_v2',MAX=15;
+let S=load(),D=[],view='vote',busy=false,mo=false,lit=-1,shown=-2,endAt=0,pm='',AC,wl,tt,warned=false;
+
+function load(){
+  let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+  const b={c:['A','B','C','D'].map(x=>({n:'Candidate '+x,p:'',s:''})),v:[0,0,0,0,0],auto:true,hold:4,pin:'',log:[],title:'BALLOT UNIT',org:'ELECTION COMMISSION',logo:''};
+  return d&&d.c&&d.v&&d.v.length===d.c.length+1?Object.assign(b,d):b;
+}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));return true}
+  catch(e){if(!warned){warned=true;toast('Cannot save data here. Votes will be lost on reload. Open the file in Chrome.')}return false}
+}
+const all=()=>S.c.concat([{n:'NOTA',nota:1}]);
+const total=()=>S.v.reduce((a,b)=>a+b,0);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sym=(c,i)=>c.nota?'🚫':c.s?`<img src="${c.s}" alt="">`:POOL[i%POOL.length];
+const pho=c=>c.nota?'':c.p?`<img src="${c.p}" alt="">`:'👤';
+const isReady=()=>!busy&&(S.auto||mo);
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,3500)}
+function ac(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}return AC}
+function beep(sec){try{const a=ac();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.frequency.value=2000;g.gain.value=.2;o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+sec)}catch(e){}}
+function buzz(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
+async function wake(){try{if(navigator.wakeLock&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>wl=null)}}catch(e){}}
+
+function render(){
+  $('#hd').innerHTML=view==='vote'?`<div class="plate">${S.logo?`<img src="${S.logo}" alt="">`:''}<div><small>${esc(S.org)}</small><b>${esc(S.title||'BALLOT UNIT')}</b></div></div><button id="lk" data-a="lock" aria-label="Admin">🔒</button>`:view==='admin'?'ADMIN PANEL':'SET CANDIDATES';
+  view==='vote'?voteView():view==='admin'?admin():setup();
+  window.scrollTo(0,0);
+}
+function voteView(){
+  let h='<div class="strip"><span><i id="gr"></i>READY</span><span><i id="rl"></i>BUSY</span></div><div id="bn"></div><div class="paper">';
+  all().forEach((c,i)=>h+=`<div class="row"><b>${i+1}</b><span class="nm">${esc(c.n)}</span><div class="ph">${pho(c)}</div><div class="sy">${sym(c,i)}</div><i class="led" id="l${i}"></i><button class="bl" data-v="${i}" aria-label="Vote ${esc(c.n)}"></button></div>`);
+  h+='</div><div class="vv"><small>VVPAT</small><div id="sl"></div></div><div class="ft">ELECTRONIC VOTING MACHINE · SIMULATOR</div>';
+  $('#main').innerHTML=h;shown=-2;paint();
+}
+function slip(){
+  const c=all()[lit];
+  return `<div class="slip"><b>Sl. No. ${lit+1}</b><div class="sy">${sym(c,lit)}</div><div>${esc(c.n)}</div><div class="bar" style="animation-duration:${S.hold}s"></div></div>`;
+}
+function paint(){
+  const bn=$('#bn');if(view!=='vote'||!bn)return;
+  const rd=isReady(),left=Math.max(0,Math.ceil((endAt-Date.now())/1000));
+  bn.className=rd?'g':busy?'r':'x';
+  bn.innerHTML=rd?'✅ READY: press ONE blue button':busy?`🔴 VOTE RECORDED. Next voter in ${left}s`:'⏳ Waiting for officer<button class="nx" data-a="next">▶ BALLOT</button>';
+  $('#main').classList.toggle('lk',!rd);$('#gr').classList.toggle('on',rd);$('#rl').classList.toggle('on',busy);
+  all().forEach((c,i)=>{const l=$('#l'+i);if(l)l.classList.toggle('on',lit===i)});
+  if(shown!==lit){$('#sl').innerHTML=lit>=0?slip():'';shown=lit}
+}
+function vote(i){
+  if(!isReady()){buzz(30);return}
+  busy=true;mo=false;lit=i;S.v[i]++;S.log.push([Date.now(),i]);save();
+  endAt=Date.now()+S.hold*1000;beep(S.hold);buzz(400);paint();
+}
+function finish(){busy=false;lit=-1;paint()}
+setInterval(()=>{if(busy){Date.now()>=endAt?finish():paint()}},250);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){wake();if(busy&&Date.now()>=endAt)finish()}});
+
+function admin(){
+  $('#main').innerHTML=`<div class="card"><small>TOTAL VOTES</small><div class="big">${total()}</div></div>
+  <button class="cb b" data-a="result">📊 RESULT</button>
+  <button class="cb b" data-a="csv">⬇ EXPORT CSV</button>
+  <button class="cb k" data-a="setup">✏️ SET CANDIDATES</button>
+  <div class="card" style="text-align:left"><b>Machine label</b>
+  <p style="margin:10px 0 4px"><small>Organisation / Election Commission</small></p><input class="tx" data-br="org" value="${esc(S.org)}" maxlength="40">
+  <p style="margin:10px 0 4px"><small>Title (replaces "BALLOT UNIT")</small></p><input class="tx" data-br="title" value="${esc(S.title)}" maxlength="30">
+  <p style="margin:10px 0 4px"><small>Logo</small></p><div class="ab" style="justify-content:flex-start;align-items:center"><div class="th" style="margin:0 8px 0 0;width:48px;height:48px">${S.logo?`<img src="${S.logo}" alt="">`:'🏛'}</div><label class="ib">📷<input type="file" accept="image/*" capture="environment" hidden data-logo="1"></label><label class="ib">🖼<input type="file" accept="image/*" hidden data-logo="1"></label>${S.logo?'<button class="ib" data-a="logoclr">✕</button>':''}</div></div>
+  <div class="card" style="text-align:left"><label><input type="checkbox" data-set="auto" ${S.auto?'checked':''}> <b>Auto-ready for next voter</b><br><small>Off = officer presses BALLOT before each voter (real EVM style)</small></label>
+  <p style="margin:14px 0 0">Beep / VVPAT time: <select data-set="hold">${[2,3,4,5,7].map(x=>`<option ${S.hold===x?'selected':''}>${x}</option>`).join('')}</select> seconds</p>
+  <p style="margin:14px 0 0"><button class="ib" data-a="pin">Change PIN</button></p></div>
+  <button class="cb r" data-a="clear">🗑 CLEAR VOTES</button>
+  <button class="cb g" data-a="back">🗳 START / RETURN TO VOTING</button>`;
+}
+function modal(h){const m=$('#modal');m.innerHTML=`<div class="mb">${h}</div>`;m.hidden=false}
+function closeM(){$('#modal').hidden=true}
+function askPin(mode){
+  pm=mode;
+  modal(`<h3>${mode==='enter'?'ENTER PIN':'SET PIN (4-8 digits)'}</h3><input id="pi" type="password" inputmode="numeric" maxlength="8" autocomplete="off"><button class="cb g" data-a="pinok" style="width:100%;margin:12px 0 0">OK</button><button class="cb k" data-a="close" style="width:100%;margin:8px 0 0">Cancel</button>`);
+  setTimeout(()=>{const p=$('#pi');p&&p.focus()},50);
+}
+function result(){
+  const a=all(),t=total(),mx=Math.max(1,...S.v);
+  let best=-1,bv=-1,tie=false;
+  S.c.forEach((c,i)=>{if(S.v[i]>bv){bv=S.v[i];best=i;tie=false}else if(S.v[i]===bv)tie=true});
+  const vd=t===0?'No votes cast':bv===0?'Only NOTA votes cast':tie?'Tie between top candidates':'Leading: '+S.c[best].n;
+  modal('<h3>RESULT</h3>'+a.map((c,i)=>`<div class="rr"><div class="sy">${sym(c,i)}</div><div class="rn">${esc(c.n)}<div class="rb"><u style="width:${S.v[i]/mx*100}%"></u></div></div><b>${S.v[i]}</b></div>`).join('')+`<p><b>Total votes: ${t}</b><br>${esc(vd)}</p><button class="cb b" data-a="close" style="width:100%;margin:0">Close</button>`);
+}
+function csv(){
+  let t='Sl,Candidate,Votes\n';
+  all().forEach((c,i)=>t+=`${i+1},"${c.n.replace(/"/g,'""')}",${S.v[i]}\n`);
+  t+=`,Total,${total()}\n\nVote log (time,candidate no.)\n`+S.log.map(l=>new Date(l[0]).toISOString()+','+(l[1]+1)).join('\n');
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='evm_results.csv';document.body.appendChild(a);a.click();a.remove()}
+  catch(e){toast('Download not supported here')}
+}
+function slot(i,k,label,img,ph){
+  return `<div class="slot"><div class="th">${img?`<img src="${img}" alt="">`:ph}</div>${label}
+  <div class="ab"><label class="ib">📷<input type="file" accept="image/*" capture="environment" hidden data-i="${i}" data-k="${k}"></label>
+  <label class="ib">🖼<input type="file" accept="image/*" hidden data-i="${i}" data-k="${k}"></label>
+  ${img?`<button class="ib" data-clr="${i},${k}">✕</button>`:''}</div></div>`;
+}
+function setup(){
+  let h='';
+  D.forEach((c,i)=>h+=`<div class="ed"><b>${i+1}</b><div class="fld"><input type="text" data-nm="${i}" value="${esc(c.n)}" maxlength="30" placeholder="Candidate name"><div class="sl">${slot(i,'p','Photo',c.p,'👤')}${slot(i,'s','Symbol',c.s,POOL[i%POOL.length])}</div></div><button class="x" data-del="${i}">✕</button></div>`);
+  h+=`<p class="hint">NOTA is always added last. Use 📷 for camera or 🖼 for gallery.</p>
+  <button class="cb add" data-add="1" ${D.length>=MAX?'disabled':''}>＋ ADD CANDIDATE</button>
+  <button class="cb g" data-save="1">💾 SAVE</button><button class="cb k" data-a="cancel">Cancel</button>`;
+  $('#main').innerHTML=h;
+}
+function fit(file,cb){
+  const r=new FileReader();
+  r.onload=e=>{const im=new Image();
+    im.onload=()=>{const k=Math.min(1,180/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));
+      const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+      cb(c.toDataURL('image/jpeg',.82))};
+    im.onerror=()=>toast('Could not read that image');im.src=e.target.result};
+  r.readAsDataURL(file);
+}
+
+document.addEventListener('pointerdown',()=>{ac();wake()},{once:true});
+document.addEventListener('click',e=>{
+  try{
+    if(e.target.id==='modal'){closeM();return}
+    const t=e.target.closest('[data-v],[data-a],[data-del],[data-clr],[data-add],[data-save]');
+    if(!t)return;const d=t.dataset;
+    if(d.v!==undefined)vote(+d.v);
+    else if(d.a){
+      const a=d.a;
+      if(a==='lock')askPin(S.pin?'enter':'set');
+      else if(a==='pinok'){
+        const v=($('#pi').value||'').trim();
+        if(pm==='enter'){if(v===S.pin){closeM();view='admin';render()}else{toast('Wrong PIN');$('#pi').value=''}}
+        else if(/^\d{4,8}$/.test(v)){S.pin=v;save();closeM();view='admin';render();toast('PIN saved')}
+        else toast('PIN must be 4-8 digits');
+      }
+      else if(a==='close')closeM();
+      else if(a==='next'){mo=true;paint()}
+      else if(a==='back'){view='vote';mo=false;render()}
+      else if(a==='result')result();
+      else if(a==='csv')csv();
+      else if(a==='logoclr'){S.logo='';save();admin()}
+      else if(a==='pin')askPin('set');
+      else if(a==='clear')modal('<h3>CLEAR ALL VOTES?</h3><p>This erases every recorded vote and cannot be undone.</p><button class="cb r" data-a="clearok" style="width:100%;margin:0">YES, CLEAR</button><button class="cb k" data-a="close" style="width:100%;margin:8px 0 0">Cancel</button>');
+      else if(a==='clearok'){S.v=S.v.map(()=>0);S.log=[];save();closeM();render();toast('Votes cleared')}
+      else if(a==='setup'){if(total()>0){toast('Clear the votes first to change candidates');return}D=JSON.parse(JSON.stringify(S.c));view='setup';render()}
+      else if(a==='cancel'){view='admin';render()}
+    }
+    else if(d.del!==undefined){if(D.length<=2){toast('At least 2 candidates needed');return}D.splice(+d.del,1);setup()}
+    else if(d.clr){const[i,k]=d.clr.split(',');D[+i][k]='';setup()}
+    else if(d.add){if(D.length<MAX){D.push({n:'Candidate '+(D.length+1),p:'',s:''});setup()}}
+    else if(d.save){
+      S.c=D.map((c,i)=>({n:c.n.trim()||'Candidate '+(i+1),p:c.p,s:c.s}));
+      S.v=new Array(S.c.length+1).fill(0);S.log=[];
+      if(save()){view='admin';render();toast('Candidates saved')}
+    }
+  }catch(err){toast('Error: '+err.message)}
+});
+document.addEventListener('input',e=>{if(e.target.dataset.nm!==undefined)D[+e.target.dataset.nm].n=e.target.value;else if(e.target.dataset.br){S[e.target.dataset.br]=e.target.value;save()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='pi')document.querySelector('[data-a=pinok]').click()});
+document.addEventListener('change',e=>{
+  const f=e.target,d=f.dataset;
+  if(f.type==='file'&&f.files[0]){if(d.logo){fit(f.files[0],u=>{S.logo=u;save();admin()})}else{const i=+d.i,k=d.k;fit(f.files[0],u=>{D[i][k]=u;setup()})}}
+  else if(d.set==='auto'){S.auto=f.checked;save()}
+  else if(d.set==='hold'){S.hold=+f.value;save()}
+});
+window.addEventListener('error',()=>toast('Something went wrong. Tap again.'));
+render();
+</script>
+</body>
+</html>
